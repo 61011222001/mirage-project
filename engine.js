@@ -228,10 +228,7 @@ class Physics {
             if (!this.isBegin) clearInterval(i);
 
             console.log("asd");
-
-            if(counter === 10) {
-                
-            }
+            
         }, 1000/this.#fps);
     }
 }
