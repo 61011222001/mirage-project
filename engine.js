@@ -225,10 +225,10 @@ class Physics {
 
     async #physicsLoop () {
         var interval = setInterval(function(){
-            if (!this.isBegin) clearInterval(i);
+            if (!this.isBegin) clearInterval(interval);
 
             console.log("asd");
-            
+
         }, 1000/this.#fps);
     }
 }
