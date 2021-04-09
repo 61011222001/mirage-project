@@ -119,6 +119,7 @@ class Label extends Component {
     #refresh () {
         this.document.innerHTML = this.getString();
     }
+
     setText(attr, text) {
         for (var i in this.#info) {
             if (Object.keys(this.#info[i]).includes(attr)) {
@@ -154,12 +155,28 @@ class Label extends Component {
     }
 }
 
-class Charactor extends Component {
-    player = {};
+class Obstruct extends Component {
+    inScene;
+
+    status = {
+        fps: 60,
+        movement: {
+            isMove: false,
+            speed: 4.5,
+            acc: 50,
+            vectors: {
+                left: {dx: -1, dy: 0},
+                right: {dx: 1, dy: 0},
+                up: {dx: 0, dy: -1},
+                down: {dx: 0, dy: 1},
+                jump: {dx: 0, dy: -1}
+            }
+        }
+    };
 
     shape = {
         type: "px",
-        position: {x: 200, y: 100},
+        position: {x: 50, y: 50},
         obstruction: {top: 0, bottom: 0, left: 0, right: 0},
         size: {width: 50, height: 50},
     };
@@ -184,52 +201,124 @@ class Charactor extends Component {
         this.document.style.backgroundColor = this.style.backgroundColor;
     }
 
-    setMove () {
-    }
-
+    setScene (component) { this.inScene = component; }
     setPosition(x=0, y=0) {
-        this.player.x = x;
-        this.player.y = y;
+        if (true) {
+            this.shape.position.x = x;
+            this.shape.position.y = y;
 
-        this.document.style.left = x;
-        this.document.style.top = y;
+            this.shape.obstruction.left = x - this.shape.size.width/2;
+            this.shape.obstruction.top = y - this.shape.size.height/2;
+            this.shape.obstruction.right = x + this.shape.size.width + this.shape.size.width/2;
+            this.shape.obstruction.bottom = y + this.shape.size.height + this.shape.size.height/2;
+
+            this.document.style.left = x + this.shape.size.width/2;
+            this.document.style.top = y + this.shape.size.height/2;
+        }
     }
-}
+    
+    goto (option) {
+        if (this.status.movement.isMove) return;
 
+        var vector = this.status.movement.vectors[option];
+
+        this.movementByDDA(
+            this.shape.position.x + this.status.movement.acc * vector.dx, 
+            this.shape.position.y + this.status.movement.acc * vector.dy
+        );
+    }
+
+    async movementByDDA (tx, ty) {
+        this.status.movement.isMove = true;
+
+        var x1 = this.shape.position.x;
+        var y1 = this.shape.position.y;
+        var x2 = tx;
+        var y2 = ty;
+
+        var dx = x2 - x1;
+        var dy = y2 - y1;
+
+        var steps = Math.abs(dx) > Math.abs(dy) ? Math.abs(dx) : Math.abs(dy);
+
+        var xinc = dx / steps;
+        var yinc = dy / steps;
+
+        var x = x1;
+        var y = y1;
+
+        var speed = this.status.movement.speed;
+
+        var movement = (reach=0) => {
+            setTimeout(() => {
+                if (reach < steps-reach*speed) {
+                    this.setPosition(x, y);
+
+                    x += xinc + (xinc * speed);
+                    y += yinc + (yinc * speed);
+
+                    movement(reach + 1);
+                } else {
+                    this.status.movement.isMove = false;
+                }
+            }, 1000/this.status.fps);
+        };
+
+        movement();
+    }
+
+
+}
 
 class Physics {
     #fps;
     #gravity;
-    #objectList;
+    #obstructList;
 
     isBegin;
+    inScene;
 
-    constructor (fps=23, gravity=1, objectList=[]) {
+    constructor (fps=60, gravity=4, obstructList=[], inScene=null) {
         this.#fps =fps;
         this.#gravity = gravity;
-        this.#objectList = objectList;
+        this.#obstructList = obstructList;
 
         this.isBegin = false;
+        this.inScene = inScene;
     }
     
     setFps (fps) { this.#fps = fps; }
     setGravity (gravity) { this.#gravity = gravity}
-    setObjects (objectList) {this.#objectList = objectList;}
+    setObstructs (obstructList) {this.#obstructList = obstructList;}
+    setScene (component) { this.inScene = component; }
 
     getFps () { return this.#fps; }
     getGravity () { return this.#gravity; }
-    getObjects () { return this.#objectList; }
+    getObstructs () { return this.#obstructList; }
+    getScene () { return this.inScene; }
 
     begin () { this.isBegin = true; this.#physicsLoop(); }
     end () { this.isBegin = false; }
 
     async #physicsLoop () {
-        var interval = setInterval(function(){
-            if (!this.isBegin) clearInterval(interval);
+        var fall = (count=0) => {
+            setTimeout(() => {
+                if (this.isBegin) {
+                    for (var i in this.#obstructList) {
+                        var obstruct = this.#obstructList[i];
+                        var shape = obstruct.shape;
 
-            console.log("asd");
+                        if (shape.obstruction.bottom < this.inScene.shape.obstruction.bottom) {
+                            obstruct.setPosition(shape.position.x, shape.position.y + this.#gravity);
+                        }
+                    }
 
-        }, 1000/this.#fps);
+                    fall(count + 1);
+                }
+            }, 1000/this.#fps);
+        };
+
+        fall();
     }
 }
 
@@ -237,7 +326,7 @@ class DemoScene extends Scene {
     physics;
 
     label;
-    charactor;
+    obstruct;
 
     constructor (id=null) {
         super(id);
@@ -245,13 +334,19 @@ class DemoScene extends Scene {
         this.physics = new Physics();
 
         this.label = new Label(id=id+":info");
-        this.charactor = new Charactor(id=id+":charactor@demo");
+        this.obstruct = new Obstruct(id=id+":obstruct@demo");
 
         this.add(this.label);
-        this.add(this.charactor);
+        this.add(this.obstruct);
 
-        this.physics.setObjects([this.label, this.charactor]);
+        this.obstruct.setScene(this);
+        this.obstruct.setPosition(200, 100);
+        // this.obstruct.movementByDDA(400, 100);
+
+        this.physics.setScene(this);
+        this.physics.setObstructs([this.obstruct]);
         this.physics.begin();
+
     }
 }
 
@@ -382,14 +477,19 @@ class System {
 
             if (events.keyCode == this.env.user.keyboard.controllers.w) {
                 this.env.user.keyboard.action = "up";
+                this.env.scene.primary.obstruct.goto("up");
             } else if (events.keyCode == this.env.user.keyboard.controllers.a) {
                 this.env.user.keyboard.action = "left";
+                this.env.scene.primary.obstruct.goto("left");
             } else if (events.keyCode == this.env.user.keyboard.controllers.s) {
                 this.env.user.keyboard.action = "down";
+                this.env.scene.primary.obstruct.goto("down");
             } else if (events.keyCode == this.env.user.keyboard.controllers.d) {
-                this.env.user.keyboard.action = "left";
+                this.env.user.keyboard.action = "right";
+                this.env.scene.primary.obstruct.goto("right");
             } else if (events.keyCode == this.env.user.keyboard.controllers.space) {
                 this.env.user.keyboard.action = "jump";
+                this.env.scene.primary.obstruct.goto("jump");
             }
 
             setSceneLabel();
@@ -400,6 +500,8 @@ class System {
             this.env.user.keyboard.up = true;
             this.env.user.keyboard.key = null;
             this.env.user.keyboard.action = null;
+
+            // this.env.scene.primary.obstruct.status.movement.isMove = false;
 
             setSceneLabel();
         });
