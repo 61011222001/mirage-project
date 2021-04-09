@@ -155,7 +155,6 @@ class Label extends Component {
 }
 
 class Charactor extends Component {
-    inScene;
     player = {};
 
     shape = {
@@ -185,6 +184,9 @@ class Charactor extends Component {
         this.document.style.backgroundColor = this.style.backgroundColor;
     }
 
+    setMove () {
+    }
+
     setPosition(x=0, y=0) {
         this.player.x = x;
         this.player.y = y;
@@ -194,18 +196,61 @@ class Charactor extends Component {
     }
 }
 
+
+class Physics {
+    #fps;
+    #gravity;
+    #objectList;
+
+    isBegin;
+
+    constructor (fps=23, gravity=1, objectList=[]) {
+        this.#fps =fps;
+        this.#gravity = gravity;
+        this.#objectList = objectList;
+
+        this.isBegin = false;
+    }
+    
+    setFps (fps) { this.#fps = fps; }
+    setGravity (gravity) { this.#gravity = gravity}
+    setObjects (objectList) {this.#objectList = objectList;}
+
+    getFps () { return this.#fps; }
+    getGravity () { return this.#gravity; }
+    getObjects () { return this.#objectList; }
+
+    begin () { this.isBegin = true; this.#physicsLoop(); }
+    end () { this.isBegin = false; }
+
+    async #physicsLoop () {
+        if (!this.isBegin) return;
+
+        console.log("fall");
+
+        setTimeout(this.#physicsLoop, 1000/this.#fps);
+    }
+}
+
 class DemoScene extends Scene {
+    physics;
+
     label;
     charactor;
 
     constructor (id=null) {
         super(id);
 
+        this.physics = new Physics();
+
         this.label = new Label(id=id+":info");
         this.charactor = new Charactor(id=id+":charactor@demo");
 
         this.add(this.label);
         this.add(this.charactor);
+
+        this.physics.setObjects([this.label, this.charactor]);
+        this.physics.begin();
     }
 }
 
