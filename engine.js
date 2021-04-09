@@ -224,11 +224,15 @@ class Physics {
     end () { this.isBegin = false; }
 
     async #physicsLoop () {
-        if (!this.isBegin) return;
+        var interval = setInterval(function(){
+            if (!this.isBegin) clearInterval(i);
 
-        console.log("fall");
+            console.log("asd");
 
-        setTimeout(this.#physicsLoop, 1000/this.#fps);
+            if(counter === 10) {
+                
+            }
+        }, 1000/this.#fps);
     }
 }
 
