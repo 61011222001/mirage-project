@@ -32,6 +32,14 @@
     });
 
     loop(() => {
+        if (keyMap[keySet.shift]) {
+            getPrimaryScene().mainCharactor.setSpeed(4.0*2.0);
+            getPrimaryScene().mainCharactor.setOpacity(0.85);
+        } else {
+            getPrimaryScene().mainCharactor.setSpeed(4.0);
+            getPrimaryScene().mainCharactor.setOpacity(1);
+        }
+
         if (keyMap[keySet.w]) {
             getPrimaryScene().mainCharactor.setMoveDirect("up");
         }
