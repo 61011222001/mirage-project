@@ -1,0 +1,85 @@
+<body>
+
+<script type="text/javascript" src="./controllers/componnent.js"></script>
+<script type="text/javascript" src="./controllers/scene.js"></script>
+<script type="text/javascript" src="./controllers/label.js"></script>
+<script type="text/javascript" src="./controllers/obstruct.js"></script>
+<script type="text/javascript" src="./controllers/charactor.js"></script>
+
+<script type="text/javascript" src="./charactors/main_charactor.js"></script>
+<script type="text/javascript" src="./scenes/main_scene.js"></script>
+
+<script type="text/javascript" src="./system.js"></script>
+    
+<script type="text/javascript">
+
+    var scene = new MainScene();
+    var label = new Label();
+
+    setup(() => {
+        scene.setBackgroundColor("#ddd");
+        scene.setSize(width, height);
+        scene.setPosition(0, 0);
+
+        label.setBackgroundColor("#ffcc66");
+        label.setOpacity(0.5);
+        label.setSize(240, 220);
+        label.setPosition(10, 10);
+
+        buildAll(scene);
+        buildAll(label)
+        setPrimaryScene(scene);
+
+        scene.setup();
+    });
+
+    loop(() => {
+        if (keyMap[keySet.w]) {
+            getPrimaryScene().mainCharactor.setMoveDirect("up");
+        }
+            
+        if (keyMap[keySet.a]) {
+            getPrimaryScene().mainCharactor.setMoveDirect("left");
+        }
+            
+        if (keyMap[keySet.s]) {
+            getPrimaryScene().mainCharactor.setMoveDirect("down");
+        }
+            
+        if (keyMap[keySet.d]) {
+            getPrimaryScene().mainCharactor.setMoveDirect("right");
+        } 
+            
+        if (keyMap[keySet.w] && keyMap[keySet.a]) {
+            getPrimaryScene().mainCharactor.setMoveDirect("left_up");
+        } 
+            
+        if (keyMap[keySet.s] && keyMap[keySet.a]) {
+            getPrimaryScene().mainCharactor.setMoveDirect("left_down");
+        } 
+            
+        if (keyMap[keySet.w] && keyMap[keySet.d]) {
+            getPrimaryScene().mainCharactor.setMoveDirect("right_up");
+        } 
+            
+        if (keyMap[keySet.s] && keyMap[keySet.d]) {
+            getPrimaryScene().mainCharactor.setMoveDirect("right_down");
+        }
+
+        label.setText(
+            "<ul>"
+                + "<li>fps: " + fps + "</li>"
+                + "<li>input rate: " + inputRate + "</li>"
+                + "<br>"
+                + "<li>window: " + width + ", " + height + "</li>"
+                + "<li>mouse: " + mouseX + ", " + mouseY + "</li>" 
+                + "<li>keyboard: (" + keyPressList.toString() + ")</li>"
+                + "<br>"
+                + "<li>charactor: " + (getPrimaryScene().mainCharactor.x.toFixed(2)) 
+                    + ", " + (getPrimaryScene().mainCharactor.y.toFixed(2)) + "</li>"
+            + "</ul>"
+        );
+    });
+</script>
+
+</body>
