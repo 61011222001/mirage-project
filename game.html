@@ -26,51 +26,53 @@
 
         buildAll(scene);
         buildAll(label)
-        setPrimaryScene(scene);
 
-        scene.setup();
+        setPrimaryScene(scene);
+        getPrimaryScene().setup();
     });
 
     loop(() => {
-        if (keyMap[keySet.shift]) {
-            getPrimaryScene().mainCharactor.setSpeed(4.0*2.0);
-            getPrimaryScene().mainCharactor.setOpacity(0.85);
-        } else {
-            getPrimaryScene().mainCharactor.setSpeed(4.0);
-            getPrimaryScene().mainCharactor.setOpacity(1);
-        }
+        getPrimaryScene().do((obj) => {
+            if (keyMap[keySet.shift]) {
+                obj.mainCharactor.setSpeed(4.0*2.0);
+                obj.mainCharactor.setOpacity(0.75);
+            } else {
+                obj.mainCharactor.setSpeed(4.0);
+                obj.mainCharactor.setOpacity(1.0);
+            }
 
-        if (keyMap[keySet.w]) {
-            getPrimaryScene().mainCharactor.setMoveDirect("up");
-        }
-            
-        if (keyMap[keySet.a]) {
-            getPrimaryScene().mainCharactor.setMoveDirect("left");
-        }
-            
-        if (keyMap[keySet.s]) {
-            getPrimaryScene().mainCharactor.setMoveDirect("down");
-        }
-            
-        if (keyMap[keySet.d]) {
-            getPrimaryScene().mainCharactor.setMoveDirect("right");
-        } 
-            
-        if (keyMap[keySet.w] && keyMap[keySet.a]) {
-            getPrimaryScene().mainCharactor.setMoveDirect("left_up");
-        } 
-            
-        if (keyMap[keySet.s] && keyMap[keySet.a]) {
-            getPrimaryScene().mainCharactor.setMoveDirect("left_down");
-        } 
-            
-        if (keyMap[keySet.w] && keyMap[keySet.d]) {
-            getPrimaryScene().mainCharactor.setMoveDirect("right_up");
-        } 
-            
-        if (keyMap[keySet.s] && keyMap[keySet.d]) {
-            getPrimaryScene().mainCharactor.setMoveDirect("right_down");
-        }
+            if (keyMap[keySet.w]) {
+                obj.mainCharactor.setMoveDirect("up");
+            }
+                
+            if (keyMap[keySet.a]) {
+                obj.mainCharactor.setMoveDirect("left");
+            }
+                
+            if (keyMap[keySet.s]) {
+                obj.mainCharactor.setMoveDirect("down");
+            }
+                
+            if (keyMap[keySet.d]) {
+                obj.mainCharactor.setMoveDirect("right");
+            } 
+                
+            if (keyMap[keySet.w] && keyMap[keySet.a]) {
+                obj.mainCharactor.setMoveDirect("left_up");
+            } 
+                
+            if (keyMap[keySet.s] && keyMap[keySet.a]) {
+                obj.mainCharactor.setMoveDirect("left_down");
+            } 
+                
+            if (keyMap[keySet.w] && keyMap[keySet.d]) {
+                obj.mainCharactor.setMoveDirect("right_up");
+            } 
+                
+            if (keyMap[keySet.s] && keyMap[keySet.d]) {
+                obj.mainCharactor.setMoveDirect("right_down");
+            }
+        });
 
         label.setText(
             "<ul>"

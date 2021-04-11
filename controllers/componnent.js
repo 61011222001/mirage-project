@@ -61,6 +61,12 @@ class Component {
         }
     }
 
+    do (then=null) {
+        if (then != null) {
+            then(this);
+        }
+    }
+
     setup (then=null) {
         if (then != null) {
             then(this);
