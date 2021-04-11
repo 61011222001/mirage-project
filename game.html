@@ -23,7 +23,7 @@
 
         label.setBackgroundColor("#ffcc66");
         label.setOpacity(0.5);
-        label.setSize(240, 220);
+        label.setSize(240, 160);
         label.setPosition(10, 10);
 
         buildAll(scene);
@@ -68,15 +68,12 @@
 
         label.setText(
             "<ul>"
-                + "<li>fps: " + fps + "</li>"
-                + "<li>input rate: " + inputRate + "</li>"
+                + "<li>fps: " + fps + ", ~" + (1000/fps).toFixed(2) + "ms</li>"
+                + "<li>input rate: " + inputRate + "ms </li>"
                 + "<br>"
                 + "<li>window: " + width + ", " + height + "</li>"
                 + "<li>mouse: " + mouseX + ", " + mouseY + "</li>" 
-                + "<li>keyboard: (" + keyPressList.toString() + ")</li>"
-                + "<br>"
-                + "<li>charactor: " + (getPrimaryScene().mainCharactor.x.toFixed(2)) 
-                    + ", " + (getPrimaryScene().mainCharactor.y.toFixed(2)) + "</li>"
+                + "<li>keyboard: " + keyPressList.toString() + "</li>"
             + "</ul>"
         );
     });
