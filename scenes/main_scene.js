@@ -10,12 +10,15 @@ class MainScene extends Scene {
 
         this.mainCharactor.setPosition(500, 100);
 
-        this.mainCharactorLabel.setOpacity(0.5);
+        this.mainCharactorLabel.setOpacity(0.9);
         this.mainCharactorLabel.setFontSize(12);
         this.mainCharactorLabel.setSize(100, 15);
         
         this.addChild(this.mainCharactor);
         this.addChild(this.mainCharactorLabel);
+
+        this.setPosition(0, 0);
+        this.setBackgroundColor("#ddd");
     }
 
     setup (then=null) {
