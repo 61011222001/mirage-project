@@ -70,7 +70,7 @@ var KeyMultiPressed = () => {
     var keys = [];
 
     for (var key of Object.keys(KEY_MAP))
-        if (KEY_MAP[key])
+        if (KEY_MAP[key] != undefined && KEY_MAP[key] != false)
             keys.push(key);
 
     return keys;
