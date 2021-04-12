@@ -1,4 +1,4 @@
-var ENV = [];
+var ENV = [/* componnent, ... */];
 
 var FPS = 60;
 var DELAY = 60;

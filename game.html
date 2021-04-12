@@ -29,23 +29,23 @@ Setup(() => {
 });
 
 Loop(() => {
-    PRIMARY_SCENE.player((obj) => {
+    PRIMARY_SCENE.player((p) => {
         if (KEY_MAP.shift) {
-            obj.setSpeed(2.0*2.0);
-            obj.setOpacity(0.75);
+            p.setSpeed(2.0*2.0);
+            p.setOpacity(0.75);
         } else {
-            obj.setSpeed(2.0);
-            obj.setOpacity(1.0);
+            p.setSpeed(2.0);
+            p.setOpacity(1.0);
         }
 
-        if (KEY_MAP.w) obj.moveSet("up");
-        if (KEY_MAP.a) obj.moveSet("left");   
-        if (KEY_MAP.s) obj.moveSet("down"); 
-        if (KEY_MAP.d) obj.moveSet("right");   
-        if (KEY_MAP.w && KEY_MAP.a) obj.moveSet("left_up");    
-        if (KEY_MAP.s && KEY_MAP.a) obj.moveSet("left_down");  
-        if (KEY_MAP.w && KEY_MAP.d) obj.moveSet("right_up");     
-        if (KEY_MAP.s && KEY_MAP.d) obj.moveSet("right_down");
+        if (KEY_MAP.w) p.moveSet("up");
+        if (KEY_MAP.a) p.moveSet("left");   
+        if (KEY_MAP.s) p.moveSet("down"); 
+        if (KEY_MAP.d) p.moveSet("right");   
+        if (KEY_MAP.w && KEY_MAP.a) p.moveSet("left_up");    
+        if (KEY_MAP.s && KEY_MAP.a) p.moveSet("left_down");  
+        if (KEY_MAP.w && KEY_MAP.d) p.moveSet("right_up");     
+        if (KEY_MAP.s && KEY_MAP.d) p.moveSet("right_down");
     });
 
     statusLabel.setText(
