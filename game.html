@@ -1,96 +1,64 @@
-<body style="overflow: hidden">
-
+<body>
 <script type="text/javascript" src="./controllers/componnent.js"></script>
 <script type="text/javascript" src="./controllers/scene.js"></script>
 <script type="text/javascript" src="./controllers/label.js"></script>
 <script type="text/javascript" src="./controllers/obstruct.js"></script>
 <script type="text/javascript" src="./controllers/charactor.js"></script>
-
 <script type="text/javascript" src="./charactors/main_charactor.js"></script>
 <script type="text/javascript" src="./scenes/main_scene.js"></script>
-
 <script type="text/javascript" src="./system.js"></script>
-    
 <script type="text/javascript">
 
-    var mainScene = new MainScene();
-    var statusLabel = new Label();
+var mainScene = new MainScene();
+var statusLabel = new Label();
 
+Setup(() => {
+    mainScene.setSize(WIDTH, HEIGHT);;
 
-    var x = () => {};
+    statusLabel.setBackgroundColor("#ffcc66");
+    statusLabel.setOpacity(0.5);
+    statusLabel.setPadding(10);
+    statusLabel.setSize(200, 160);
+    statusLabel.setPosition(10, 10);
 
-    console.log(typeof(x) == "function");
+    BuildAll(mainScene);
+    BuildAll(statusLabel)
 
-    Setup(() => {
-        mainScene.setSize(WIDTH, HEIGHT);;
+    PRIMARY_SCENE = mainScene;
+    PRIMARY_SCENE.setup();
+});
 
-        statusLabel.setBackgroundColor("#ffcc66");
-        statusLabel.setOpacity(0.5);
-        statusLabel.setPadding(10);
-        statusLabel.setSize(200, 160);
-        statusLabel.setPosition(10, 10);
+Loop(() => {
+    PRIMARY_SCENE.player((obj) => {
+        if (KEY_MAP.shift) {
+            obj.setSpeed(2.0*2.0);
+            obj.setOpacity(0.75);
+        } else {
+            obj.setSpeed(2.0);
+            obj.setOpacity(1.0);
+        }
 
-        BuildAll(mainScene);
-        BuildAll(statusLabel)
-
-        PRIMARY_SCENE = mainScene;
-        PRIMARY_SCENE.setup();
+        if (KEY_MAP.w) obj.moveSet("up");
+        if (KEY_MAP.a) obj.moveSet("left");   
+        if (KEY_MAP.s) obj.moveSet("down"); 
+        if (KEY_MAP.d) obj.moveSet("right");   
+        if (KEY_MAP.w && KEY_MAP.a) obj.moveSet("left_up");    
+        if (KEY_MAP.s && KEY_MAP.a) obj.moveSet("left_down");  
+        if (KEY_MAP.w && KEY_MAP.d) obj.moveSet("right_up");     
+        if (KEY_MAP.s && KEY_MAP.d) obj.moveSet("right_down");
     });
 
-    Loop(() => {
-        PRIMARY_SCENE.player((obj) => {
-            if (KEY_MAP[KEY_SET.shift]) {
-                obj.setSpeed(2.0*2.0);
-                obj.setOpacity(0.75);
-            } else {
-                obj.setSpeed(2.0);
-                obj.setOpacity(1.0);
-            }
+    statusLabel.setText(
+        "<p>"
+            + "FPS: " + FPS + ", ~" + (1000/FPS).toFixed(2) + "ms<br>"
+            + "Delay: " + DELAY + "ms <br>"
+            + "<br>"
+            + "Window: " + WIDTH + ", " + HEIGHT + "<br>"
+            + "Mouse: " + MOUSE_X + ", " + MOUSE_Y + "<br>" 
+            + "Keyboard: " + KEY_MULTI_PRESSED + "<br>"
+        + "</p>"
+    );
+});
 
-            if (KEY_MAP[KEY_SET.w]) {
-                obj.moveSet("up");
-            }
-                
-            if (KEY_MAP[KEY_SET.a]) {
-                obj.moveSet("left");
-            }
-                
-            if (KEY_MAP[KEY_SET.s]) {
-                obj.moveSet("down");
-            }
-                
-            if (KEY_MAP[KEY_SET.d]) {
-                obj.moveSet("right");
-            } 
-                
-            if (KEY_MAP[KEY_SET.w] && KEY_MAP[KEY_SET.a]) {
-                obj.moveSet("left_up");
-            } 
-                
-            if (KEY_MAP[KEY_SET.s] && KEY_MAP[KEY_SET.a]) {
-                obj.moveSet("left_down");
-            } 
-                
-            if (KEY_MAP[KEY_SET.w] && KEY_MAP[KEY_SET.d]) {
-                obj.moveSet("right_up");
-            } 
-                
-            if (KEY_MAP[KEY_SET.s] && KEY_MAP[KEY_SET.d]) {
-                obj.moveSet("right_down");
-            }
-        });
-
-        statusLabel.setText(
-            "<p>"
-                + "FPS: " + FPS + ", ~" + (1000/FPS).toFixed(2) + "ms<br>"
-                + "Delay: " + DELAY + "ms <br>"
-                + "<br>"
-                + "Window: " + WIDTH + ", " + HEIGHT + "<br>"
-                + "Mouse: " + MOUSE_X + ", " + MOUSE_Y + "<br>" 
-                + "Keyboard: " + KEY_PRESS_LIST + "<br>"
-            + "</p>"
-        );
-    });
 </script>
-
 </body>

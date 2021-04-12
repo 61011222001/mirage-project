@@ -45,21 +45,20 @@ class MainScene extends Scene {
         });
         
         this.mainCharactor.loop((obj) => {
-            this.mainCharactorLabel.setText(
-                obj.id + "<br>"
-                + "x=" + obj.x + ", y=" + obj.y
-            );
+            var InObstructed = InMultiOverlap(obj);
+            var OutObstructed = OutMultiOverlap(obj);
+
+            for (var obs of InObstructed)
+                if (obs.type == "obstruct")
+                    obs.setBackgroundColor("#8f7a3d");
+
+            for (var obs of OutObstructed)
+                if (obs.type == "obstruct")
+                    obs.setBackgroundColor("#3d8f3d");
+
+            this.mainCharactorLabel.setText(obj.id + "<br>" + "x=" + obj.x + ", y=" + obj.y);
             this.mainCharactorLabel.setPosition(obj.x, obj.y-35);
 
-            ObstructsOverlap(obj, (obstructs) => {
-                for (var ob of obstructs)
-                    ob.setBackgroundColor("#8f7a3d");
-            });
-
-            ObstructsNotOverlap(obj, (obstructs) => {
-                for (var ob of obstructs)
-                    ob.setBackgroundColor("#3d8f3d");
-            });
         });
 
         this.secCharactor.setup((obj) => {
@@ -84,10 +83,7 @@ class MainScene extends Scene {
         });
 
         this.secCharactor.loop((obj) => {
-            this.secCharactorLabel.setText(
-                obj.id + "<br>"
-                + "x=" + obj.x.toFixed(0) + ", y=" + obj.y.toFixed(0)
-            );
+            this.secCharactorLabel.setText(obj.id + "<br>" + "x=" + obj.x.toFixed(0) + ", y=" + obj.y.toFixed(0));
             this.secCharactorLabel.setPosition(obj.x, obj.y-35);
         });
     }
