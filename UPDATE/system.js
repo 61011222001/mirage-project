@@ -35,6 +35,11 @@ var Setup = (task=null) => {
         KEY_MULTI_PRESSED = KeyMultiPressed();
     });
 
+    window.addEventListener("mousemove", (e) => {
+        MOUSE_X = e.clientX;
+        MOUSE_Y = e.clientY;
+    });
+
     if (task != null)
         task();
 };
@@ -60,8 +65,8 @@ var KeyMultiPressed = () => {
     return keys;
 }
 
-var IsOverlap = () => {
+var InSingleOverlap = () => {
 };
 
-var OverLap = () => {
+var InMultiOverlap = () => {
 };
