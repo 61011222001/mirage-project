@@ -11,24 +11,24 @@ class Charactor extends Obstruct {
         right_down: [1, 1]
     };
 
-    constructor (id=null, className=null) {
-        super((id == null) ? "charactor@" + Math.floor(Math.random()*1000) : id, 
-            (className == null) ? "charactor" : className);
+    constructor (id="charactor", className="charactor", type="obstruct") {
+        super(id, className, type);
         
-        this.setDistance(50);
+        this.setDistance(15);
+        this.setSpeed(2.0);
+        this.setSize(50, 50);
+        this.setPosition(0, 0);
     }
 
     getDistance () { return this.distance; }
     setDistance (value) { this.distance = value; }
 
-    setMoveDirect (direction) {
-        var dir = this.directionSet[direction];
-        var dis = this.distance;
-        var dx = this.x + dir[0]*dis;
-        var dy = this.y + dir[1]*dis
-
-        this.setMovement(dx, dy);
-
-        return [dx, dy];
+    moveSet (key) {
+        this.movement(
+            this.x + this.directionSet[key][0]*this.distance, 
+            this.y + this.directionSet[key][1]*this.distance
+        );
     }
+
+
 }

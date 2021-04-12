@@ -1,19 +1,24 @@
-var primaryScene = null;
-var components = [];
+var COMPONENTS_SPRING = [];
+var COMPONENTS_BUILDED = [];
+var COMPONENTS_DESTROYED = [];
 
-var fps = 60;
-var inputRate = 50;
-var width = null;
-var height = null;
+var OBSTRUCT_TYPE = ["obstruct", "charactor", "main_charactor"];
 
-var mouseX = 0;
-var mouseY = 0;
+var PRIMARY_SCENE = null;
 
-var keyPress = false;
-var keyPressList = [];
-var keyMap = {};
+var FPS = 60;
+var DELAY = 50;
+var WIDTH = window.innerWidth;
+var HEIGHT = window.innerHeight;
 
-var keySet = {
+var MOUSE_X = 0;
+var MOUSE_Y = 0;
+
+var KEY_PRESS = false;
+var KEY_PRESS_LIST = [];
+var KEY_MAP = {};
+
+var KEY_SET = {
     shift: 16,
     space: 32, 
     a: 65, 
@@ -22,7 +27,7 @@ var keySet = {
     w: 87
 };
 
-var keyNames = {
+var KEY_NAMES = {
     16: "shift",
     32: "space", 
     65: "a", 
@@ -31,7 +36,19 @@ var keyNames = {
     87: "w"
 };
 
-function buildAll (componnent) {
+function SpringId (name) {
+    var id = name + "@" + Math.floor(Math.random() * 1000);
+
+    if (!COMPONENTS_SPRING.includes(id)) {
+        COMPONENTS_SPRING.push(id);
+    } else {
+        SpringId(name);
+    }
+
+    return id;
+}
+
+function BuildAll (componnent) {
     var invited = [componnent];
 
     while (invited.length != 0) {
@@ -40,15 +57,15 @@ function buildAll (componnent) {
 
         current.build();
 
-        for (var i in children) {
-            invited.push(children[i]);   
-        }
+        for (var i in children)
+            invited.push(children[i]);
+        COMPONENTS_BUILDED.push(current);
     }
 
     return componnent;
 }
 
-function destroyAll (componnent) {
+function DestroyAll (componnent) {
     var invited = [componnent];
 
     while (invited.length != 0) {
@@ -57,103 +74,113 @@ function destroyAll (componnent) {
 
         current.destroy();
 
-        for (var i in children) {
-            invited.push(children[i]);   
-        }
+        for (var i in children)
+            invited.push(children[i]);
     }
 
     return componnent;
 }
 
-function setup (then=null) {
-    if (then != null) {
-        then();
-    }
-
-    setWindow();
-    setMouse();
-    setKeybord();
+function Setup (func=() => {}) {
+    func();
+    SetWindow();
+    SetMouse();
+    SetKeybord();
 }
 
-function loop(then=() => {}) {
-    var live = async () => {
+function Loop (func=() => {}) {
+    var runtime = async () => {
         setTimeout(() => {
-            then();
-            live();
-        }, inputRate);
-    }; live();
+            func();
+            runtime();
+        }, DELAY);
+    }; runtime();
 }
 
-function getPrimaryScene() { return primaryScene; }
-function setPrimaryScene(componnent) {
-    setup(() => {
-        primaryScene = componnent;
-    });
-}
+function SetWindow () {
+    var windowResizeEvent = (e) => {
+        WIDTH = window.innerWidth;
+        HEIGHT = window.innerHeight;
 
-function setWindow () {
-    var windowResizeEvent = (e=null) => {
-        width = window.innerWidth;
-        height = window.innerHeight;
-
-        if (primaryScene != null) {
-            primaryScene.setSize(width, height);
-        }
+        if (PRIMARY_SCENE != null)
+            PRIMARY_SCENE.setSize(WIDTH, HEIGHT);
 
     }; windowResizeEvent();
 
     window.addEventListener("resize", windowResizeEvent);
 }
 
-function setMouse () {
-    var mousemoveEvent = (e=null) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    };
-
-    var mouseclickEvent = (e=null) => {
-    };
-
-    var mousedownEvent = (e=null) => {
-    };
-
-    var mouseupEvent = (e=null) => {
-    };
-
-    primaryScene.getDOM().addEventListener("mousemove", mousemoveEvent);
-    primaryScene.getDOM().addEventListener("mouseclick", mouseclickEvent);
-    primaryScene.getDOM().addEventListener("mousedown", mousedownEvent);
-    primaryScene.getDOM().addEventListener("mouseup", mouseupEvent);
+function SetMouse () {
+    PRIMARY_SCENE.getDOM().addEventListener("mousemove", (e) => {
+        MOUSE_X = e.clientX;
+        MOUSE_Y = e.clientY;
+    });
 }
 
-function setKeybord () {
-    var keydownEvent = (e) => {
-        keyPress = true;
-        keyMap[e.keyCode] = true;
-        keyPressList = getKeys(true);
-    };
+function SetKeybord () {
+    window.addEventListener("keydown", (e) => {
+        KEY_PRESS = true;
+        KEY_MAP[e.keyCode] = true;
+        KEY_PRESS_LIST = GetKeys();
+    });
 
-    var keyupEvent = (e) => {
-        keyPress = false;
-        keyMap[e.keyCode] = false;
-        keyPressList = getKeys(true);
-    };
+    window.addEventListener("keyup", (e) => {
+        KEY_PRESS = false;
+        KEY_MAP[e.keyCode] = false;
+        KEY_PRESS_LIST = GetKeys();
+    });
+}
 
-    var getKeys = (option=true) => {
-        var keyList = [];
+function GetKeys () {
+    var result = [];
 
-        for (var [key, val] of Object.entries(keyMap)) {
-            if (val == option) {
-                if (keyNames[key] != undefined) {
-                    keyList.push(keyNames[key]);
-                }
-            }
-        }
+    for (var [key, val] of Object.entries(KEY_MAP))
+        if (KEY_NAMES[key] != undefined && val == true)
+            result.push(KEY_NAMES[key]);
 
-        return keyList;
-    };
+    return result;
+}
 
-    window.addEventListener("keydown", keydownEvent);
-    window.addEventListener("keyup", keyupEvent);
+function IsObstructOverlap (u, v, func=() => {}) {
+    var l1 = u.shape.p1, r1 = u.shape.p4;
+    var l2 = v.shape.p1, r2 = v.shape.p4;
+
+    if (l1.x == r1.x || l1.y == r2.y || l2.x == r2.x || l2.y == r2.y) {
+        return false;
+    }
+
+    if (l1.x >= r2.x || l2.x >= r1.x) {
+        return false;
+    }
+
+    if (l1.y >= r2.y || l2.y >= r1.y) {
+        return false;
+    }
+
+    return true;
+}
+
+function ObstructsOverlap (u, func = () => {}) {
+    var obstructs = [];
+
+    for (var ob of COMPONENTS_BUILDED)
+        if (ob != u && ob.type == "obstruct")
+            if (IsObstructOverlap(u, ob))
+                obstructs.push(ob);
+
+    func(obstructs);
+    return obstructs;
+}
+
+function ObstructsNotOverlap (u, func = () => {}) {
+    var obstructs = [];
+
+    for (var ob of COMPONENTS_BUILDED)
+        if (ob != u && ob.type == "obstruct")
+            if (!IsObstructOverlap(u, ob))
+                obstructs.push(ob);
+
+    func(obstructs);
+    return obstructs;
 }
 

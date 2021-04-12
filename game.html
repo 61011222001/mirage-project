@@ -1,4 +1,4 @@
-<body>
+<body style="overflow: hidden">
 
 <script type="text/javascript" src="./controllers/componnent.js"></script>
 <script type="text/javascript" src="./controllers/scene.js"></script>
@@ -13,76 +13,77 @@
     
 <script type="text/javascript">
 
-    var scene = new MainScene();
-    var label = new Label();
+    var mainScene = new MainScene();
+    var statusLabel = new Label();
 
-    setup(() => {
-        scene.setSize(width, height);
+    Setup(() => {
+        mainScene.setSize(WIDTH, HEIGHT);;
 
-        label.setBackgroundColor("#ffcc66");
-        label.setOpacity(0.5);
-        label.setSize(240, 160);
-        label.setPosition(10, 10);
+        statusLabel.setBackgroundColor("#ffcc66");
+        statusLabel.setOpacity(0.5);
+        statusLabel.setPadding(10);
+        statusLabel.setSize(200, 160);
+        statusLabel.setPosition(10, 10);
 
-        buildAll(scene);
-        buildAll(label)
+        BuildAll(mainScene);
+        BuildAll(statusLabel)
 
-        setPrimaryScene(scene);
-        getPrimaryScene().setup();
+        PRIMARY_SCENE = mainScene;
+        PRIMARY_SCENE.setup();
     });
 
-    loop(() => {
-        getPrimaryScene().do((obj) => {
-            if (keyMap[keySet.shift]) {
-                obj.mainCharactor.setSpeed(4.0*2.0);
-                obj.mainCharactor.setOpacity(0.75);
+    Loop(() => {
+        PRIMARY_SCENE.player((obj) => {
+            if (KEY_MAP[KEY_SET.shift]) {
+                obj.setSpeed(2.0*2.0);
+                obj.setOpacity(0.75);
             } else {
-                obj.mainCharactor.setSpeed(4.0);
-                obj.mainCharactor.setOpacity(1.0);
+                obj.setSpeed(2.0);
+                obj.setOpacity(1.0);
             }
 
-            if (keyMap[keySet.w]) {
-                obj.mainCharactor.setMoveDirect("up");
+            if (KEY_MAP[KEY_SET.w]) {
+                obj.moveSet("up");
             }
                 
-            if (keyMap[keySet.a]) {
-                obj.mainCharactor.setMoveDirect("left");
+            if (KEY_MAP[KEY_SET.a]) {
+                obj.moveSet("left");
             }
                 
-            if (keyMap[keySet.s]) {
-                obj.mainCharactor.setMoveDirect("down");
+            if (KEY_MAP[KEY_SET.s]) {
+                obj.moveSet("down");
             }
                 
-            if (keyMap[keySet.d]) {
-                obj.mainCharactor.setMoveDirect("right");
+            if (KEY_MAP[KEY_SET.d]) {
+                obj.moveSet("right");
             } 
                 
-            if (keyMap[keySet.w] && keyMap[keySet.a]) {
-                obj.mainCharactor.setMoveDirect("left_up");
+            if (KEY_MAP[KEY_SET.w] && KEY_MAP[KEY_SET.a]) {
+                obj.moveSet("left_up");
             } 
                 
-            if (keyMap[keySet.s] && keyMap[keySet.a]) {
-                obj.mainCharactor.setMoveDirect("left_down");
+            if (KEY_MAP[KEY_SET.s] && KEY_MAP[KEY_SET.a]) {
+                obj.moveSet("left_down");
             } 
                 
-            if (keyMap[keySet.w] && keyMap[keySet.d]) {
-                obj.mainCharactor.setMoveDirect("right_up");
+            if (KEY_MAP[KEY_SET.w] && KEY_MAP[KEY_SET.d]) {
+                obj.moveSet("right_up");
             } 
                 
-            if (keyMap[keySet.s] && keyMap[keySet.d]) {
-                obj.mainCharactor.setMoveDirect("right_down");
+            if (KEY_MAP[KEY_SET.s] && KEY_MAP[KEY_SET.d]) {
+                obj.moveSet("right_down");
             }
         });
 
-        label.setText(
-            "<ul>"
-                + "<li>fps: " + fps + ", ~" + (1000/fps).toFixed(2) + "ms</li>"
-                + "<li>input rate: " + inputRate + "ms </li>"
+        statusLabel.setText(
+            "<p>"
+                + "FPS: " + FPS + ", ~" + (1000/FPS).toFixed(2) + "ms<br>"
+                + "Delay: " + DELAY + "ms <br>"
                 + "<br>"
-                + "<li>window: " + width + ", " + height + "</li>"
-                + "<li>mouse: " + mouseX + ", " + mouseY + "</li>" 
-                + "<li>keyboard: " + keyPressList.toString() + "</li>"
-            + "</ul>"
+                + "Window: " + WIDTH + ", " + HEIGHT + "<br>"
+                + "Mouse: " + MOUSE_X + ", " + MOUSE_Y + "<br>" 
+                + "Keyboard: " + KEY_PRESS_LIST + "<br>"
+            + "</p>"
         );
     });
 </script>

@@ -1,10 +1,17 @@
 class Component {
+    id;
+    className;
+    type;
+
     #DOM = null;
     
     #parent = null;
     #children = []
 
     loopTime = null;
+
+    x = null;
+    y = null;
 
     width = null;
     height = null;
@@ -13,19 +20,31 @@ class Component {
     left = null;
     right = null;
 
-    x = null;
-    y = null;
+    shape = {
+        p1: {x: null, y: null},
+        p2: {x: null, y: null},
+        p3: {x: null, y: null},
+        p4: {x: null, y: null},
+    };
 
+    backgroundImage = null;
     backgroundColor = null;
     opacity = null;
+
+    pading = null;
+    margin = null;
 
     fontSize = null;
     fontFamily = null;
 
-    constructor (id=null, className=null) {
+    constructor (id="componnent", className="componnent", type="componnent") {
+        this.id = SpringId(id);
+        this.className = className;
+        this.type = type;
+
         this.#DOM = document.createElement("div");
-        this.#DOM.id = (id == null) ? id="componnent@" + Math.floor(Math.random()*1000) : id;
-        this.#DOM.className = (className == null) ? "componnent" : className;
+        this.#DOM.id = this.id;
+        this.#DOM.className = this.className;
 
         this.loopTime = false;
 
@@ -33,7 +52,7 @@ class Component {
         this.setFontFamily('"Segoe UI",Arial,sans-serif');
     }
 
-    getDOM () { return this.#DOM; }
+    getDOM (func = () => {}) { func(this.#DOM); return this.#DOM; }
     getParent () { return this.#parent; }
     getChildren () { return this.#children; }
 
@@ -42,77 +61,44 @@ class Component {
     addChild (component) { component.setParent(this); this.#children.push(component); }
 
     build () {
-        for (var i in this.#children) {
+        for (var i in this.#children)
             this.#DOM.appendChild(this.#children[i].getDOM());
-        }
 
-        if (this.#parent == null) {
+        if (this.#parent == null)
             document.body.appendChild(this.#DOM);
-        }
     }
 
     destroy () {
-        for (var i in this.#children) {
+        for (var i in this.#children)
             this.#DOM.removeChild(this.#children[i].getDOM());
-        }
 
-        if (this.#parent == null) {
+        if (this.#parent == null)
             document.body.removeChild(this.#DOM);
-        }
     }
 
-    do (then=null) {
-        if (then != null) {
-            then(this);
-        }
-    }
+    with (func = () => {}) { func(this) }
+    setup (func = () => {}) { func(this) }
+    end (func = () => {}) {this.loopTime=false; func(this); }
 
-    setup (then=null) {
-        if (then != null) {
-            then(this);
-        }
-    }
-
-    end (then=null) {
-        this.loopTime = false;
-
-        if (then != null) {
-            then(this);
-        }
-    }
-
-    loop (then=null) {
+    loop (func = () => {}) {
         this.loopTime = true;
 
         var runtime = () => {
             setTimeout(() => {
                 if (this.loopTime) {
-                    if (then != null) {
-                        then(this);
-                    }
-
+                    func(this);
                     runtime();
                 }
-            }, 1000/fps);
+            }, 1000/FPS);
         }; runtime();
-    }
-
-    setBackgroundColor (color) {
-        this.backgroundColor = color;
-        this.getDOM().style.backgroundColor = color;
-    }
-
-    setOpacity (value) {
-        this.opacity = value;
-        this.getDOM().style.opacity = value;
     }
 
     setSize (width, height) {
         this.width = width;
         this.height = height;
 
-        this.getDOM().style.width = width;
-        this.getDOM().style.height = height;
+        this.#DOM.style.width = width;
+        this.#DOM.style.height = height;
     }
 
     setPosition (x, y) {
@@ -120,22 +106,54 @@ class Component {
         this.y = y;
 
         this.top = y;
-        this.bottom = height;
+        this.bottom = y + this.height;
         this.left = x;
-        this.right = width;
+        this.right = x + this.width;
 
-        this.getDOM().style.position = "absolute";
-        this.getDOM().style.left = x + "px";
-        this.getDOM().style.top = y + "px";
+        this.shape = {
+            p1: {x: x, y: y},
+            p2: {x: x+this.width, y: y},
+            p3: {x: x, y: y+this.height},
+            p4: {x: x+this.width, y: y+this.height},
+        };
+
+        this.#DOM.style.position = "absolute";
+        this.#DOM.style.left = x + "px";
+        this.#DOM.style.top = y + "px";
+    }
+
+    setBackgroundColor (color) {
+        this.backgroundColor = color;
+        this.#DOM.style.backgroundColor = color;
+    }
+
+    setBackgroundImage (image) {
+        this.backgroundImage = image;
+        this.#DOM.style.backgroundImage = image;
+    }
+
+    setOpacity (value) {
+        this.opacity = value;
+        this.#DOM.style.opacity = value;
+    }
+
+    setPadding (value) {
+        this.pading = value;
+        this.#DOM.style.padding = value + "px";
+    }
+
+    setMargin (value) {
+        this.margin = value;
+        this.#DOM.style.margin = value + "px";
     }
 
     setFontSize (value) {
         this.fontSize = value;
-        this.getDOM().style.fontSize = value;
+        this.#DOM.style.fontSize = value;
     }
 
     setFontFamily (value) {
         this.fontFamily = value;
-        this.getDOM().style.fontFamily = value;
+        this.#DOM.style.fontFamily = value;
     }
 }

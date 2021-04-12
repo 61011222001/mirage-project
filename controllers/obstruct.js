@@ -5,9 +5,8 @@ class Obstruct extends Component {
     #yinc = null;
     #reach = null;
 
-    constructor (id=null, className=null) {
-        super((id == null) ? "obstruct@" + Math.floor(Math.random()*1000) : id, 
-            (className == null) ? "obstruct" : className);
+    constructor (id="obstruct", className="obstruct", type="obstruct") {
+        super(id, className, type);
 
         this.setSpeed(4.0);
     }
@@ -15,7 +14,7 @@ class Obstruct extends Component {
     getSpeed () { return this.#speed; }
     setSpeed (value) { this.#speed = value; }
     
-    setMovement (tx, ty) {
+    movement (tx, ty) {
         var x1 = this.x, y1 = this.y;
         var x2 = tx, y2 = ty;
 
@@ -27,7 +26,7 @@ class Obstruct extends Component {
         this.#reach = 0;
     }
 
-    loop (then=null) {
+    loop (func = () => {}) {
         super.loop((obj) => {
             if (this.#reach < this.#steps/this.#speed) {
                 this.setPosition(
@@ -38,9 +37,7 @@ class Obstruct extends Component {
                 this.#reach += 1;
             }
 
-            if (then != null) {
-                then(this);
-            }
+            func(this);
         });
     }
 }

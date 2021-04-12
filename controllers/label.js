@@ -1,9 +1,8 @@
 class Label extends Component {
     value;
 
-    constructor (id=null, className=null) {
-        super((id == null) ? "label@" + Math.floor(Math.random()*1000) : id, 
-            (className == null) ? "label" : className);
+    constructor (id="label", className="label", type="label") {
+        super(id, className, type);
     }
 
     setText (value) {
