@@ -29,6 +29,7 @@ Setup(() => {
 });
 
 Loop(() => {
+    PRIMARY_SCENE.setSize(WIDTH, HEIGHT);
     PRIMARY_SCENE.player((p) => {
         if (KEY_MAP.shift) {
             p.setSpeed(2.0*2.0);
