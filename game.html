@@ -3,33 +3,48 @@
 <script type="text/javascript" src="./controllers/scene.js"></script>
 <script type="text/javascript" src="./controllers/label.js"></script>
 <script type="text/javascript" src="./controllers/obstruct.js"></script>
-<script type="text/javascript" src="./controllers/charactor.js"></script>
-<script type="text/javascript" src="./charactors/main_charactor.js"></script>
+<script type="text/javascript" src="./controllers/character.js"></script>
+<script type="text/javascript" src="./characters/main_character.js"></script>
 <script type="text/javascript" src="./scenes/main_scene.js"></script>
 <script type="text/javascript" src="./system.js"></script>
 <script type="text/javascript">
 
-var mainScene = new MainScene();
+PRIMARY_SCENE = new MainScene();
+
+var consoleLabel = new Label();
 var statusLabel = new Label();
 
 Setup(() => {
-    mainScene.setSize(WIDTH, HEIGHT);;
+    consoleLabel.setText("hello:");
+    consoleLabel.setFontSize(16);
+    consoleLabel.setFontFamily("monospace");
+    consoleLabel.setTextAlign("right");
+    consoleLabel.setOpacity(0.8);
+    consoleLabel.setPadding(10);
+    consoleLabel.setSize(400, 250);
+    consoleLabel.getDOM((d) => {
+        d.style.overflowWrap = "break-word";
+        d.style.overflow = "hidden";
+    });
 
-    statusLabel.setBackgroundColor("#ffcc66");
-    statusLabel.setOpacity(0.5);
+    statusLabel.setOpacity(0.8);
     statusLabel.setPadding(10);
-    statusLabel.setSize(200, 160);
+    statusLabel.setSize(240, 180);
     statusLabel.setPosition(10, 10);
 
-    BuildAll(mainScene);
-    BuildAll(statusLabel)
+    PRIMARY_SCENE.setSize(WIDTH, HEIGHT);
+    PRIMARY_SCENE.begin((obj) => {
+        BuildAll(PRIMARY_SCENE);
+    });
 
-    PRIMARY_SCENE = mainScene;
-    PRIMARY_SCENE.setup();
+    BuildAll(consoleLabel)
+    BuildAll(statusLabel)
 });
 
 Loop(() => {
     PRIMARY_SCENE.setSize(WIDTH, HEIGHT);
+    PRIMARY_SCENE.equipLayers();
+
     PRIMARY_SCENE.player((p) => {
         if (KEY_MAP.shift) {
             p.setSpeed(2.0*2.0);
@@ -50,15 +65,21 @@ Loop(() => {
     });
 
     statusLabel.setText(
-        "<p>"
-            + "FPS: " + FPS + ", ~" + (1000/FPS).toFixed(2) + "ms<br>"
-            + "Delay: " + DELAY + "ms <br>"
-            + "<br>"
-            + "Window: " + WIDTH + ", " + HEIGHT + "<br>"
-            + "Mouse: " + MOUSE_X + ", " + MOUSE_Y + "<br>" 
-            + "Keyboard: " + KEY_MULTI_PRESSED + "<br>"
-        + "</p>"
+        "FPS: " + FPS + ", ~" + (1000/FPS).toFixed(2) + "ms<br>"
+        + "Delay: " + DELAY + "ms <br>"
+        + "<br>"
+        + "Window: " + WIDTH + ", " + HEIGHT + "<br>"
+        + "Mouse: " + MOUSE_X + ", " + MOUSE_Y + "<br>" 
+        + "Keyboard: " + KEY_MULTI_PRESSED + "<br>"
+        + "<br>"
+        + "Primary Scene: " + PRIMARY_SCENE.id + "<br>"
     );
+
+    consoleLabel.setPosition(WIDTH - consoleLabel.width - 30, 10);
+    consoleLabel.setText(CONSOLE);
+    consoleLabel.getDOM((d) => {
+        d.scrollTop = d.scrollHeight;
+    });
 });
 
 </script>

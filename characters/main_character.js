@@ -1,5 +1,5 @@
-class MainCharactor extends Charactor {
-    constructor (id="main_charactor", className="main_charactor") {
+class MainCharacter extends Character {
+    constructor (id="main_character", className="main_character") {
         super(id, className);
         
         this.setSpeed(2.0);

@@ -6,7 +6,7 @@ class Component {
     #DOM = null;
     
     #parent = null;
-    #children = []
+    #children = [];
 
     loopTime = null;
 
@@ -34,6 +34,7 @@ class Component {
     pading = null;
     margin = null;
 
+    textAlign = null;
     fontSize = null;
     fontFamily = null;
 
@@ -47,9 +48,7 @@ class Component {
         this.#DOM.className = this.className;
 
         this.loopTime = false;
-
-        this.setFontSize(16);
-        this.setFontFamily('"Segoe UI",Arial,sans-serif');
+        this.perspective = false;
     }
 
     getDOM (func = () => {}) { func(this.#DOM); return this.#DOM; }
@@ -61,16 +60,17 @@ class Component {
     addChild (component) { component.setParent(this); this.#children.push(component); }
 
     build () {
-        for (var i in this.#children)
-            this.#DOM.appendChild(this.#children[i].getDOM());
+        for (var child of this.#children)
+            this.#DOM.appendChild(child.getDOM());
 
-        if (this.#parent == null)
+        if (this.#parent == null) {
             document.body.appendChild(this.#DOM);
+        }
     }
 
     destroy () {
-        for (var i in this.#children)
-            this.#DOM.removeChild(this.#children[i].getDOM());
+        for (var child of this.#children)
+            this.#DOM.removeChild(child.getDOM());
 
         if (this.#parent == null)
             document.body.removeChild(this.#DOM);
@@ -145,6 +145,11 @@ class Component {
     setMargin (value) {
         this.margin = value;
         this.#DOM.style.margin = value + "px";
+    }
+
+    setTextAlign (value) {
+        this.textAlign = value;
+        this.#DOM.style.textAlign = value;
     }
 
     setFontSize (value) {

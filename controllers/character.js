@@ -1,4 +1,4 @@
-class Charactor extends Obstruct {
+class Character extends Obstruct {
     distance = null;
     directionSet = {
         left: [-1, 0],
@@ -11,7 +11,7 @@ class Charactor extends Obstruct {
         right_down: [1, 1]
     };
 
-    constructor (id="charactor", className="charactor", type="obstruct") {
+    constructor (id="character", className="character", type="obstruct") {
         super(id, className, type);
         
         this.setDistance(15);

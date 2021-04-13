@@ -1,0 +1,54 @@
+<body>
+<script type="text/javascript" src="./controllers/componnent.js"></script>
+<script type="text/javascript" src="./controllers/obstruct.js"></script>
+<script type="text/javascript" src="./system.js"></script>
+<script type="text/javascript">
+
+var inc = (x1, y1, x2, y2,) => {
+    var dx = x2-x1, dy = y2-y1;
+    var steps = Math.max(Math.abs(dx), Math.abs(dy));
+
+    return {
+        xinc: dx/steps,
+        yinc: dy/steps,
+        steps: steps
+    };
+};
+
+var width = 1000;
+var height = 500;
+var far = 500;
+var layer = 10;
+
+var step = far/layer;
+
+var s = new Obstruct();
+var d = new Obstruct();
+var test = new Obstruct();
+
+var w = 100, h = 100;
+var x = 200, y = 0;
+
+s.setBackgroundColor("#ddd");
+s.setSize(width, height);
+s.setPosition(0, 0);
+
+d.setBackgroundColor("green");
+d.setSize(w, h);
+d.setPosition(x, y);
+
+var m = inc(0, 0, far, height);
+var g = ((height-y)/layer)*m.yinc;
+
+console.log(g);
+
+test.setBackgroundColor("blue");
+test.setSize(w-g, h-g);
+test.setPosition(x+(g/2), y+g);
+
+BuildAll(s);
+BuildAll(d);
+BuildAll(test);
+
+</script>
+</body>
