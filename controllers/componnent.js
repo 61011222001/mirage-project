@@ -45,7 +45,7 @@ class Component {
         this.className = className;
         this.type = type;
 
-        this.#DOM = document.createElement("div");
+        this.#DOM = document.createElement("svg");
         this.#DOM.id = this.id;
         this.#DOM.className = this.className;
 
