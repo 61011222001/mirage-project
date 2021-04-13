@@ -5,8 +5,8 @@ class Label extends Component {
         super(id, className, type);
 
         this.setTextAlign("left");
-        this.setFontSize(14);
-        this.setFontFamily('"Segoe UI",Arial,sans-serif');
+        this.setFontSize(16);
+        this.setFontFamily("monospace");
     }
 
     setText (value) {

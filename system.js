@@ -111,9 +111,8 @@ var KeyMultiPressed = () => {
 var RemoveElement = (list, item) => {
     var index = list.indexOf(item);
 
-    if (index > -1) {
+    if (index > -1)
         list.splice(index, 1);
-    }
 };
 
 var InSingleOverlap = (componnent1, componnent2) => {
@@ -147,15 +146,4 @@ var OutMultiOverlap = (component) => {
                 obstructs.push(obs);
 
     return obstructs;
-};
-
-var ZReduceRate = (x1, y1, x2, y2,) => {
-    var dx = x2-x1, dy = y2-y1;
-    var steps = Math.max(Math.abs(dx), Math.abs(dy));
-
-    return dy/steps;
-};
-
-var ZGapRate = (y, zr) => {
-    return ((HEIGHT-y)/LAYER)*zr;
 };

@@ -18,8 +18,11 @@ class MainScene extends Scene {
         this.setBackgroundColor("#ddd");
     }
 
-    player (func=() => {}) { func(this.mainCharacter) }
-    begin (func=() => {}) {
+    player (func=() => {}) { 
+        func(this.mainCharacter);
+    }
+    
+    setup (func=() => {}) {
         this.mainCharacter.setPosition(600, 400);
 
         this.mainCharacterLabel.setOpacity(0.9);
@@ -32,9 +35,6 @@ class MainScene extends Scene {
         this.secCharcterLabel.setOpacity(0.9);
         this.secCharcterLabel.setFontSize(12);
         this.secCharcterLabel.setSize(200, 35);
-
-        this.mainCharacter.setup((obj) => {
-        });
         
         this.mainCharacter.loop((obj) => {
             var InObstructed = InMultiOverlap(obj);
@@ -79,12 +79,25 @@ class MainScene extends Scene {
             this.secCharcterLabel.setPosition(obj.x, obj.y-35);
         });
 
-        this.addChild(this.secCharcter);
-        this.addChild(this.secCharcterLabel);
+        this.add(this.secCharcter);
+        this.add(this.secCharcterLabel);
 
-        this.addChild(this.mainCharacter);
-        this.addChild(this.mainCharacterLabel);
+        this.add(this.mainCharacter);
+        this.add(this.mainCharacterLabel);
 
-        super.begin(func);
+        this.paint();
+        this.paint();
+
+        super.setup(func);
+    }
+
+    loop (func=() => {}) {
+        super.loop(() => {
+            this.autoEquipLayer(this.mainCharacter);
+            this.autoEquipLayer(this.secCharcter);
+            this.paint();
+
+            func(this);
+        });
     }
 }

@@ -11,22 +11,12 @@ class Obstruct extends Component {
         this.setSpeed(4.0);
     }
 
-    getSpeed () { return this.#speed; }
-    setSpeed (value) { this.#speed = value; }
+    getSpeed () { 
+        return this.#speed; 
+    }
 
-    setPosition (x, y) {
-        // var zr = ZReduceRate(0, 0, FAR, HEIGHT);
-        // var zg = ZGapRate(y, zr);
-
-        // Print("cls");
-        // Print("Z Reduce Rate:" + zr);
-        // Print("Z Gap: " + zg);
-        // Print(x+(zg/2) + ", " + y+zg);
-
-        this.setSize(100, 100);
-        // super.setPosition(x+(zg/2), y+zg);
-
-        super.setPosition(x, y);
+    setSpeed (value) { 
+        this.#speed = value; 
     }
     
     movement (tx, ty) {

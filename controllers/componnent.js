@@ -6,9 +6,10 @@ class Component {
     #DOM = null;
     
     #parent = null;
-    #children = [];
+    #layers = null;
 
     loopTime = null;
+    layer;
 
     x = null;
     y = null;
@@ -29,6 +30,7 @@ class Component {
 
     backgroundImage = null;
     backgroundColor = null;
+    border = null;
     opacity = null;
 
     pading = null;
@@ -47,38 +49,84 @@ class Component {
         this.#DOM.id = this.id;
         this.#DOM.className = this.className;
 
+        this.#layers = { /* 0: [componnent, ...], ... */ };
         this.loopTime = false;
-        this.perspective = false;
     }
 
-    getDOM (func = () => {}) { func(this.#DOM); return this.#DOM; }
-    getParent () { return this.#parent; }
-    getChildren () { return this.#children; }
+    paint () {
+        var invited = [this];
+        
+        while (invited.length != 0) {
+            var current = invited.shift();
+            var layers = current.getLayers();
+            var keys = Object.keys(layers);
 
-    setParent (component) { this.#parent = component; }
-    setChildren (componentList) { this.#children = componentList; }
-    addChild (component) { component.setParent(this); this.#children.push(component); }
+            for (var i=keys.length-1; i >= 0; i--) {
+                for (var component of layers[keys[i]]) {
+                    current.getDOM((d) => {
+                        d.appendChild(component.getDOM());
+                    });
 
-    build () {
-        for (var child of this.#children)
-            this.#DOM.appendChild(child.getDOM());
+                    invited.push(component);
+                }
+            }
+
+            if (!ENV.includes(current))
+                ENV.push(current);
+        }
 
         if (this.#parent == null) {
-            document.body.appendChild(this.#DOM);
+            this.#parent = document.body;
+            this.#parent.appendChild(this.getDOM());
         }
     }
 
-    destroy () {
-        for (var child of this.#children)
-            this.#DOM.removeChild(child.getDOM());
+    add (component, layer=0) {
+        if (this.#layers[layer] == undefined)
+            this.#layers[layer] = [];
+        this.#layers[layer].push(component);
 
-        if (this.#parent == null)
-            document.body.removeChild(this.#DOM);
+        component.layer = layer;
+        component.setParent(this);
     }
 
-    with (func = () => {}) { func(this) }
-    setup (func = () => {}) { func(this) }
-    end (func = () => {}) {this.loopTime=false; func(this); }
+    setLayer (component, layer) {
+        if (this.#layers[layer] == undefined)
+            this.#layers[layer] = [];
+        RemoveElement(this.#layers[component.layer], component);
+
+        this.#layers[layer].push(component);
+        component.layer = layer;
+    }
+
+    getDOM (func = () => {}) {
+        func(this.#DOM);
+        return this.#DOM;
+    }
+
+    getParent () {
+        return this.#parent;
+    }
+
+    getLayers () { 
+        return this.#layers; 
+    }
+
+    setParent (component) { 
+        this.#parent = component; 
+    }
+
+    with (func = () => {}) {
+        func(this);
+    }
+
+    setup (func = () => {}) {
+        func(this);
+    }
+    
+    end (func = () => {}) {
+        this.loopTime=false; func(this);
+    }
 
     loop (func = () => {}) {
         this.loopTime = true;
@@ -130,6 +178,11 @@ class Component {
     setBackgroundImage (image) {
         this.backgroundImage = image;
         this.#DOM.style.backgroundImage = image;
+    }
+
+    setBorder (value) {
+        this.border = value;
+        this.#DOM.style.border = value;
     }
 
     setOpacity (value) {

@@ -33,18 +33,15 @@ Setup(() => {
     statusLabel.setPosition(10, 10);
 
     PRIMARY_SCENE.setSize(WIDTH, HEIGHT);
-    PRIMARY_SCENE.begin((obj) => {
-        BuildAll(PRIMARY_SCENE);
-    });
+    PRIMARY_SCENE.setup();
+    PRIMARY_SCENE.loop();
 
-    BuildAll(consoleLabel)
-    BuildAll(statusLabel)
+    consoleLabel.paint();
+    statusLabel.paint();
 });
 
 Loop(() => {
     PRIMARY_SCENE.setSize(WIDTH, HEIGHT);
-    PRIMARY_SCENE.equipLayers();
-
     PRIMARY_SCENE.player((p) => {
         if (KEY_MAP.shift) {
             p.setSpeed(2.0*2.0);
