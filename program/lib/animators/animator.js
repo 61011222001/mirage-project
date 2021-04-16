@@ -1,0 +1,9 @@
+class Animator {
+    
+
+    constructor () {
+    }
+
+    play () {
+    }
+}
